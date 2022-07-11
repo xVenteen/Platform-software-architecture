@@ -26,6 +26,10 @@ const router = createRouter({
                     component: () => import('../views/MainPages/AllStatus/AllStatus.vue')
                 },
                 {
+                    path: '/Home/DailyData',
+                    component: () => import('../views/MainPages/DailyData/DailyData.vue')
+                },
+                {
                     path: '/Home/SharedDocumentQuery',
                     component: () => import('../views/MainPages/SharedDocumentQuery/SharedDocumentQuery.vue')
                 },

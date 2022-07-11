@@ -1,10 +1,16 @@
 <script setup>
 import '@/assets/style/iconfont.css'
-import { ref, reactive } from 'vue'
+import { ref, reactive, onBeforeUnmount, onMounted } from 'vue'
 import { useRouter } from "vue-router"  // 引入userRouter
+import { login } from '@/api/login.js'
+import store from '@/store/index.js'
+
+onMounted(() => {
+    store.commit('setToken', sessionStorage.getItem('x-token'))
+})
 const rules = reactive(
     {
-        user: [
+        username: [
             { required: true, message: '请输入用户名', trigger: 'blur' },
         ],
         password: [
@@ -13,7 +19,7 @@ const rules = reactive(
     }
 )
 const formdata = reactive({
-    user: '',
+    username: '',
     password: '',
 })
 
@@ -31,9 +37,14 @@ const loginForm = ref(null)
 const router = useRouter()
 const loginClick = () => {
     if (!loginForm) return
-    loginForm.value.validate((valid) => {
+    loginForm.value.validate(async (valid) => {
         if (valid) {
-            router.push({ path: '/Home' })
+            const msg = await login(formdata)
+            if (msg.code === 200) {
+                store.commit('setToken', msg.data.token)
+                router.push({ path: '/Home' })
+            }
+
         } else {
             return false
         }
@@ -50,8 +61,8 @@ const loginClick = () => {
         </div>
         <div class="input-group">
             <el-form ref="loginForm" :rules="rules" :model="formdata" class="demo-form-inline">
-                <el-form-item prop="user">
-                    <el-input v-model="formdata.user" placeholder="用户名">
+                <el-form-item prop="username">
+                    <el-input v-model="formdata.username" placeholder="用户名">
                         <template #prefix>
                             <el-icon class="el-input__icon">
                                 <span class="iconfont icon-yonghu"></span>
@@ -124,10 +135,10 @@ const loginClick = () => {
             font-size: 20px;
         }
 
-        .el-form-item {
-            // margin-bottom: 0;
+        // .el-form-item {
+        //     // margin-bottom: 0;
 
-        }
+        // }
 
         .el-input {
             height: 54px;

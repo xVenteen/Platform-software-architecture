@@ -1,9 +1,10 @@
+import store from '@/store/index.js'
 import Axios from 'axios'
-import { ElMessage } from 'element-plus'
-const baseURL = 'http://127.0.0.1:8888'
+// import { ElMessage } from 'element-plus'
+// const baseURL = 'http://192.168.101.39:9021'
 
 const axios = Axios.create({
-    baseURL,
+
     timeout: 10000,// 请求超时 10s
     // headers: {
     //     post: {
@@ -19,10 +20,9 @@ axios.interceptors.request.use(
          * 根据你的项目实际情况来对 config 做处理
          * 这里对 config 不做任何处理，直接返回
          */
-        console.log(config.method);
         config.data = JSON.stringify(config.data)
         config.headers = {
-            // 'X-Token': 'aaabbbccc',
+            'X-Token': store.getters.token,
             'Content-Type': 'application/json',
         }
         return config
@@ -39,7 +39,13 @@ axios.interceptors.response.use(
          * 根据你的项目实际情况来对 response 和 error 做处理
          * 这里对 response 和 error 不做任何处理，直接返回
          */
-        return response
+        // console.log(response.data.code);
+        if (response.data.code !== 200) {
+            // ElMessage.error(`Code:${response.data.code}\nMessage:${response.data.message}`)
+            ElMessage({ type: 'error', message: `错误码:${response.data.code}   错误信息:${response.data.message}` })
+        }
+
+        return response.data
     },
     (error) => {
         if (error.response && error.response.data) {

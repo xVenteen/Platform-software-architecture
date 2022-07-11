@@ -6,13 +6,19 @@
             <el-menu-item class="title" index="" style="background: #00284d;">
                 <div class="img"><img src="@/assets/logo.png" alt=""></div>
                 <!-- --------------------------------LOGO还木有，等后面UI搞定了再填上---------------------------- -->
-                <span class="text">帅哥，您好！</span>
+                <span class="text">{{ props.userName }}，您好！</span>
             </el-menu-item>
             <el-menu-item index="/Home/AllStatus">
                 <el-icon>
                     <span class="iconfont icon-renwuqianyue"></span>
                 </el-icon>
                 <span>总体情况</span>
+            </el-menu-item>
+            <el-menu-item index="/Home/DailyData">
+                <el-icon>
+                    <span class="iconfont icon-renwuqianyue"></span>
+                </el-icon>
+                <span>每日数据情况</span>
             </el-menu-item>
             <el-menu-item index="/Home/SharedDocumentQuery">
                 <el-icon>
@@ -46,14 +52,21 @@
 
 <script setup>
 import '@/assets/style/iconfont.css'
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, onMounted, defineProps } from 'vue';
 import emitter from '@/utils/mitt.js'
 onMounted(() => {
     emitter.on('unfold', (msg) => {
         datas.unfold = msg.unfold
     })
 });
+const props = defineProps({
+    userName: {
+        type: String,
+        default: '用户',
+        required: false
 
+    }
+})
 const datas = reactive({
     unfold: false
 })
